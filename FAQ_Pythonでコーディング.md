@@ -823,13 +823,47 @@ async def register(request: Request, username: str = Form(...), password: str = 
 
 </details>
 
-<details><summary>aaa</summary>
+<details><summary>ヘッダからCookie値を取得する方法</summary>
 
 #### Q.
-- 
+- ではヘッダからCookie値である"cookie-key"を受け取る場合=Header(もcookie_key)になるのでしょうか？
 
 #### A.
-- 
+- ほぼ正しいですが、`Header()`を使ってクッキーの値を取得するには、少し工夫が必要です。具体的には、`Header`デコレーターを使い、クッキーの名前を小文字で指定します。
+
+以下に例を示します：
+
+### コード例
+
+```python
+from fastapi import FastAPI, Header
+from typing import Optional
+
+app = FastAPI()
+
+@app.get("/items/")
+async def read_items(cookie_key: Optional[str] = Header(None, alias="cookie-key")):
+    return {"cookie-key": cookie_key}
+```
+
+### 説明
+
+- **cookie_key: Optional[str] = Header(None, alias="cookie-key")**:
+  - `cookie_key`というパラメータをリクエストヘッダから取得します。
+  - `Header`を使い、デフォルト値を `None` に設定し、`alias`オプションを使ってクッキーの名前を指定します。
+  - `alias`オプションにより、ヘッダ名が「cookie-key」として扱われます。
+
+### `curl` コマンドでの実行例
+
+```bash
+curl -H "Cookie: cookie-key=my-cookie-value" "http://127.0.0.1:8000/items/"
+```
+
+このコマンドを実行すると、`cookie-key`という名前のクッキーが送信され、FastAPIアプリケーションがその値を受け取ってレスポンスとして返します。
+
+この方法を使うことで、クッキーの値をリクエストヘッダから取得できます。何か他に質問があれば、どうぞ教えてくださいね！ 😊
+
+
 
 </details>
 

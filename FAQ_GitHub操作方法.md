@@ -57,7 +57,7 @@
 
 </details>
 
-<details><summary>gitをWindowsにインストールしたい。wingetで可能ですか？</summary>
+<details><summary>Windowsにインストールする方法</summary>
 
 #### Q.
 - gitをWindowsにインストールしたい。wingetで可能ですか？
@@ -89,7 +89,7 @@ Gitがインストールされたら、Gitの設定を行います。Gitの初�
 
 </details>
 
-<details><summary>gitでファイル名を変更したい。どうすればいいか？</summary>
+<details><summary>ファイル名を変更する方法</summary>
 
 #### Q.
 - gitでファイル名を変更したい。どうすればいいか？
@@ -141,7 +141,7 @@ git push origin main
 
 </details>
 
-<details><summary>gitで以下のコマンド実行で、destination is not a directory となりました。なぜですか？git mv FAQ OpenSSLで実験.md FAQ_OpenSSLで実験.md</summary>
+<details><summary>destination is not a directory となりました。</summary>
 
 #### Q.
 - gitで以下のコマンド実行で、destination is not a directory となりました。なぜですか？git mv FAQ OpenSSLで実験.md FAQ_OpenSSLで実験.md
@@ -173,7 +173,7 @@ git mv "FAQ OpenSSLで実験.md" "FAQ_OpenSSLで実験.md"
 
 </details>
 
-<details><summary>gitコマンドの順番</summary>
+<details><summary>*commitの順番</summary>
 
 #### Q.
 - ファイル名変更の場合
@@ -186,7 +186,7 @@ git mv "FAQ OpenSSLで実験.md" "FAQ_OpenSSLで実験.md"
 
 </details>
 
-<details><summary>.envファイルをgitに上げるにはどうしたらいいですか？ignore</summary>
+<details><summary>.envファイルをgitに上げる方法</summary>
 
 #### Q.
 - .envファイルをgitに上げるにはどうしたらいいですか？ignore
@@ -239,7 +239,7 @@ git push origin main
 
 </details>
 
-<details><summary>gitのローカルリポジトリをOSの別の場所に移動したいです。どうコマンドを入力すればいいですか？</summary>
+<details><summary>ローカルリポジトリをOSの別の場所に移動したいです。</summary>
 
 #### Q.
 - gitのローカルリポジトリをOSの別の場所に移動したいです。どうコマンドを入力すればいいですか？教えてください。
@@ -413,7 +413,7 @@ git push --force origin main
 
 </details>
 
-<details><summary>gitコマンドで新規リポジトリを作る方法を教えて下さい。</summary>
+<details><summary>新規リポジトリを作る方法</summary>
 
 #### Q.
 - gitコマンドで新規リポジトリを作る方法を教えて下さい。
@@ -456,17 +456,7 @@ git push --force origin main
 
 </details>
 
-<details><summary>aaa</summary>
-
-#### Q.
-- git remote add origin https://github.com/Kei-Okuma1216/FAQ.git
-
-#### A.
-- 
-
-</details>
-
-<details><summary>githubでリポジトリの削除方法を教えてください。</summary>
+<details><summary>リポジトリの削除方法</summary>
 
 #### Q.
 - githubでリポジトリの削除方法を教えてください。
@@ -489,7 +479,7 @@ git push --force origin main
 
 </details>
 
-<details><summary>git　リポジトリからファイルを取得する方法を教えてください。</summary>
+<details><summary>リポジトリからファイルを取得する方法</summary>
 
 #### Q.
 - git　リポジトリからファイルを取得する方法を教えてください。
