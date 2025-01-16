@@ -507,6 +507,93 @@ git push --force origin main
 
 </details>
 
+<details><summary>ファイル名の変更</summary>
+
+#### Q.
+- git でファイルのリネームをしたいです。Windows11にあるファイル名を変更してgitコマンドを実行する必要がありますか？
+
+#### A.
+- `git`を使ってファイルの名前を変更する場合、ファイル名を変更するために`git mv`コマンドを使用するのが一般的です。これにより、Gitの履歴も正しく反映されるため、手動でファイル名を変更してからGitコマンドを実行する必要はありません。
+
+以下の手順で行えます：
+
+1. コマンドプロンプトまたはターミナルを開き、リポジトリのディレクトリに移動します。
+2. 次のコマンドを実行してファイル名を変更します。
+
+```bash
+git mv old_filename new_filename
+```
+
+例えば、`example.txt`というファイルを`new_example.txt`にリネームする場合は次のようにします：
+
+```bash
+git mv example.txt new_example.txt
+```
+
+3. その後、変更をコミットします：
+
+```bash
+git commit -m "Rename file from example.txt to new_example.txt"
+```
+
+これでファイルの名前が変更され、Gitの履歴にも正しく記録されます。
+
+もし、手動でファイル名を変更してしまった場合でも問題はありませんが、その場合は次のコマンドを使用して変更をステージする必要があります：
+
+```bash
+git add -A
+git commit -m "Manually renamed file"
+```
+
+以上です。何か他に疑問や質問があれば、どうぞご遠慮なく教えてくださいね。😊
+
+
+</details>
+
+<details><summary>git mvやるだけで、Windows上のファイル名も変更になるのですか？</summary>
+
+#### Q.
+- git mvやるだけで、Windows上のファイル名も変更になるのですか？
+
+#### A.
+- その通りです！`git mv`コマンドを実行すると、Gitはファイルを新しい名前に変更し、その変更をステージします。これは、Windows上のファイルシステムでも同様にファイル名が変更されることを意味します。つまり、`git mv old_filename new_filename`とするだけで、ファイル名はWindows上でも適切に変更されます。
+
+実際に手動でファイル名を変更する必要はなく、`git mv`コマンドを使用することで一貫してファイルの追跡と名前変更が行われます。
+
+これで不明点が解消されると嬉しいです。😊 何か他にお手伝いできることがあれば教えてくださいね。
+
+</details>
+
+<details><summary>aaa</summary>
+
+#### Q.
+- 
+
+#### A.
+- 
+
+</details>
+
+<details><summary>aaa</summary>
+
+#### Q.
+- 
+
+#### A.
+- 
+
+</details>
+
+<details><summary>aaa</summary>
+
+#### Q.
+- 
+
+#### A.
+- 
+
+</details>
+
 <details><summary>aaa</summary>
 
 #### Q.

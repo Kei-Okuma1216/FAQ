@@ -223,13 +223,59 @@ Set-Cookie: foo=bar; Path=/foo/bar/; Domain=my.www.example.com; Secure
 
 </details>
 
-<details><summary>aaa</summary>
+<details><summary>ダウンロードしたopenapi.jsonを改行したい</summary>
 
 #### Q.
-- 
+- FastAPIでhttp://127.0.0.1:8000/redoc で表示後、Download OpenAPI specification:Download　でopenapi.jsonをダウンロードしました。VSCodeで開くとJSONが１行に全部書かれていて改行がなかった。どうすれば、改行された人間に読みやすいJSONを得れますか？
 
 #### A.
-- 
+- JSONを読みやすい形式に整形する方法はいくつかありますが、VSCodeで手軽に行うための方法を紹介します。
+
+1. **VSCodeのフォーマッタを使う方法**:
+   - ダウンロードした `openapi.json` ファイルをVSCodeで開きます。
+   - ファイルを開いた状態で、`Shift + Alt + F`（Windowsの場合）または`Shift + Option + F`（Macの場合）を押すと、自動的に整形されます。
+
+2. **VSCodeの拡張機能を使う方法**:
+   - 「Prettier - Code formatter」という拡張機能をインストールします。これはコードのフォーマットを自動で整えるための便利なツールです。
+   - 拡張機能をインストールした後、JSONファイルを開き、右クリックして「フォーマット」を選択します。
+
+以下のように手動で整形することもできますが、上記の方法を使うのが便利です：
+
+```json
+{
+  "info": {
+    "title": "Sample API",
+    "description": "API description in Markdown.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "summary": "Returns a list of users.",
+        "responses": {
+          "200": {
+            "description": "A JSON array of user names",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+こうして整形されたJSONは、より読みやすくなります。😊
+
+他にもお手伝いできることがあれば、どうぞ教えてくださいね。
 
 </details>
 
