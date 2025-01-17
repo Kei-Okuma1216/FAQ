@@ -564,13 +564,24 @@ git commit -m "Manually renamed file"
 
 </details>
 
-<details><summary>aaa</summary>
+<details><summary>デフォルトで右折り返し設定にする</summary>
 
 #### Q.
-- 
+- visualstudiocodeでデフォルトで右折り返し設定できませんか？毎回Ctrl＋Zするのが面倒なのです。
 
 #### A.
-- 
+- おっしゃる通りです。`"workbench.panel.defaultLocation": "right"`の設定は、Visual Studio Codeのパネルの位置を右側に変更するものです。右折り返し（コード折り返し）の設定ではありません。
+
+右折り返しの設定をデフォルトにするには、以下の設定を追加する必要があります：
+
+```json
+"editor.wordWrap": "on"
+```
+
+この設定を追加することで、コードが自動的に右折り返しになります。設定を保存したら、Visual Studio Codeを再起動して変更を適用してください。
+
+他にも何かお手伝いできることがあれば、教えてくださいね！
+
 
 </details>
 
