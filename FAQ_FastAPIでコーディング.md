@@ -2,8 +2,8 @@
 
 <details><summary>APIをテストしたい</summary>
 
-#### Q.
-- FastAPIでmain.pyをこのようにつくりました。しかしuvicornでテスト時にhttp://127.0.0.1:8000/に続けて、どのように入力すればよいですか？APIのテストをしたい。
+## Q.
+FastAPIでmain.pyをこのようにつくりました。しかしuvicornでテスト時にhttp://127.0.0.1:8000/に続けて、どのように入力すればよいですか？APIのテストをしたい。
 >from datetime import datetime, time, timedelta 
 >from typing import Union 
 >from uuid import UUID 
@@ -11,10 +11,10 @@
 >app = FastAPI() 
 >@app.put("/items/{item_id}") 
 >async def read_items( item_id: UUID, start_datetime: datetime = Body(), end_datetime: datetime = Body(), process_after: 
->timedelta = Body(), repeat_at: Union[time, None] = Body(default=None), ): start_process = start_datetime + process_after duration = end_datetime - start_process return { "item_id": item_id, "start_datetime": start_datetime, "end_datetime": end_datetime, "process_after": process_after, "repeat_at": repeat_at, "start_process": start_process, "duration": duration, }
+>timedelta = Body(), repeat_at: Union[time, None] = Body(default=None), ): start_process = start_datetime + process_after duration = end_datetime start_process return { "item_id": item_id, "start_datetime": start_datetime, "end_datetime": end_datetime, "process_after": process_after, "repeat_at": repeat_at, "start_process": start_process, "duration": duration, }
 
-#### A.
-- FastAPIで作成したAPIをテストするために、以下の手順を参考にしてください。
+## A.
+FastAPIで作成したAPIをテストするために、以下の手順を参考にしてください。
 
 まず、`uvicorn`を使ってFastAPIアプリケーションを起動します。ターミナルで以下のコマンドを実行します：
 
@@ -55,11 +55,11 @@ curl -X PUT "http://127.0.0.1:8000/items/123e4567-e89b-12d3-a456-426614174000" -
 
 <details><summary>FastAPIのVersion情報</summary>
 
-#### Q.
-- 自分の使っているFastAPIのヴァージョンはどこでわかりますか？
+## Q.
+自分の使っているFastAPIのヴァージョンはどこでわかりますか？
 
-#### A.
-- FastAPIのバージョンを確認するには、いくつかの方法があります。
+## A.
+FastAPIのバージョンを確認するには、いくつかの方法があります。
 
 1. **コマンドラインから確認する方法**:
    ターミナルまたはコマンドプロンプトで次のコマンドを実行します：
@@ -86,11 +86,11 @@ curl -X PUT "http://127.0.0.1:8000/items/123e4567-e89b-12d3-a456-426614174000" -
 
 <details><summary>model_config = {"extra": "forbid"} はハードコートするべき文なのですね？</summary>
 
-#### Q.
-- model_config = {"extra": "forbid"} はハードコートするべき文なのですね？
+## Q.
+model_config = {"extra": "forbid"} はハードコートするべき文なのですね？
 
-#### A.
-- `model_config = {"extra": "forbid"}` は、Pydanticモデルに対して余分なフィールドを許可しない設定を行うための重要な設定です。しかし、すべての状況で必ずしもハードコードする必要はありません。状況に応じて柔軟に使用することが望ましいです。
+## A.
+`model_config = {"extra": "forbid"}` は、Pydanticモデルに対して余分なフィールドを許可しない設定を行うための重要な設定です。しかし、すべての状況で必ずしもハードコードする必要はありません。状況に応じて柔軟に使用することが望ましいです。
 
 例えば、次の場合にはハードコードすることをおすすめします：
 1. **セキュリティの確保**：予期しないフィールドがデータに含まれている場合、エラーを発生させることでセキュリティを強化することができます。
@@ -107,11 +107,11 @@ Pydanticの設定オプションについてもっと詳しく知りたい場合
 
 <details><summary>EdgeでURL欄に移動するショートカットは何ですか？</summary>
 
-#### Q.
-- EdgeでURL欄に移動するショートカットは何ですか？
+## Q.
+EdgeでURL欄に移動するショートカットは何ですか？
 
-#### A.
-- EdgeでURL欄に移動するショートカットは、通常「Ctrl + L」です。これでブラウザのアドレスバーに焦点が当たり、キーボードでURLを簡単に入力できます。
+## A.
+EdgeでURL欄に移動するショートカットは、通常「Ctrl + L」です。これでブラウザのアドレスバーに焦点が当たり、キーボードでURLを簡単に入力できます。
 
 他に何かお手伝いできることがありますか？
 
@@ -120,13 +120,13 @@ Pydanticの設定オプションについてもっと詳しく知りたい場合
 
 <details><summary>dbの依存性注入</summary>
 
-#### Q.
-- このようなコードは依存性注入で使いますか？ 
+## Q.
+このようなコードは依存性注入で使いますか？ 
 ```python
  async def get_db(): db = DBSession() try: yield db finally: db.close()
 ```
-#### A.
-- はい、このコードは依存性注入に使うことができます。`get_db`関数はデータベースセッションを生成し、そのセッションを外部のコードに渡すためのコンテキストマネージャーとして機能します。これにより、データベースセッションの管理を外部のコードから行うことができ、テストや再利用が容易になります。
+## A.
+はい、このコードは依存性注入に使うことができます。`get_db`関数はデータベースセッションを生成し、そのセッションを外部のコードに渡すためのコンテキストマネージャーとして機能します。これにより、データベースセッションの管理を外部のコードから行うことができ、テストや再利用が容易になります。
 
 例えば、以下のように依存性注入を使用して、データベースセッションを関数に渡すことができます：
 
@@ -146,7 +146,7 @@ async def main():
 
 何か他に質問がありますか？
 
-- もちろんです！もう一度説明しますね。
+もちろんです！もう一度説明しますね。
 
 依存性注入とは、コードの依存関係を外部から注入する手法です。これにより、コードのテストや再利用が容易になります。例えば、データベースセッションを外部から注入することで、テスト時には実際のデータベースとは独立してテストを行うことができます。
 
@@ -188,70 +188,70 @@ async def main():
 
 <details><summary>aaa</summary>
 
-#### Q.
-- 
+## Q.
 
-#### A.
-- 
 
-</details>
+## A.
 
-<details><summary>aaa</summary>
-
-#### Q.
-- 
-
-#### A.
-- 
 
 </details>
 
 <details><summary>aaa</summary>
 
-#### Q.
-- 
+## Q.
 
-#### A.
-- 
 
-</details>
+## A.
 
-<details><summary>aaa</summary>
-
-#### Q.
-- 
-
-#### A.
-- 
 
 </details>
 
 <details><summary>aaa</summary>
 
-#### Q.
-- 
+## Q.
 
-#### A.
-- 
 
-</details>
+## A.
 
-<details><summary>aaa</summary>
-
-#### Q.
-- 
-
-#### A.
-- 
 
 </details>
 
 <details><summary>aaa</summary>
 
-#### Q.
-- 
+## Q.
 
-#### A.
-- 
+
+## A.
+
+
+</details>
+
+<details><summary>aaa</summary>
+
+## Q.
+
+
+## A.
+
+
+</details>
+
+<details><summary>aaa</summary>
+
+## Q.
+
+
+## A.
+
+
+</details>
+
+<details><summary>aaa</summary>
+
+## Q.
+
+
+## A.
+
 
 </details>

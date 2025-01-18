@@ -2,12 +2,12 @@
 
 <details><summary>EdgeのタブをJavascriptでwindow.close()すると、以下のエラーになりました</summary>
 
-#### Q.
-- EdgeのタブをJavascriptでwindow.close()すると、以下のエラーになりました。どう対処すればよいですか？
+## Q.
+EdgeのタブをJavascriptでwindow.close()すると、以下のエラーになりました。どう対処すればよいですか？
 > Exception in callback _ProactorBasePipeTransport._call_connection_lost(None) handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)> Traceback (most recent call last): File "C:\Users\tensy\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 88, in _run self._context.run(self._callback, *self._args) File "C:\Users\tensy\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost self._sock.shutdown(socket.SHUT_RDWR) ConnectionResetError: [WinError 10054] 既存の接続はリモート ホストに強制的に切断されました。
 
-#### A.
-- このエラーは、JavaScriptの `window.close()` メソッドが正しく動作しない場合に発生することがあります。特に、ブラウザのセキュリティポリシーにより、JavaScriptで開かれたウィンドウやタブのみが `window.close()` で閉じられることができる場合があります。
+## A.
+このエラーは、JavaScriptの `window.close()` メソッドが正しく動作しない場合に発生することがあります。特に、ブラウザのセキュリティポリシーにより、JavaScriptで開かれたウィンドウやタブのみが `window.close()` で閉じられることができる場合があります。
 
 以下の点を確認してみてください：
 
@@ -41,11 +41,11 @@ function closeTab() {
 
 <details><summary>CookieのPath 属性はどのように使用しますか？</summary>
 
-#### Q.
-- CookieのPath 属性はどのように使用しますか？
+## Q.
+CookieのPath 属性はどのように使用しますか？
 
-#### A.
-- Cookieの`Path`属性は、そのCookieが送信されるリクエストのパスを指定するものです。この属性を設定することで、特定のパスにだけCookieを送信するように制限することができます。以下は、具体的な使用方法と効果です。
+## A.
+Cookieの`Path`属性は、そのCookieが送信されるリクエストのパスを指定するものです。この属性を設定することで、特定のパスにだけCookieを送信するように制限することができます。以下は、具体的な使用方法と効果です。
 
 ### `Path` 属性の設定例
 ```bash
@@ -70,11 +70,11 @@ Set-Cookie: name=value; Path=/docs
 
 <details><summary>ではCookieでPath属性を指定すると、https://localhost:8000/docsに送ったりできるのですか？それはどのようになるのですか？</summary>
 
-#### Q.
-- ではCookieでPath属性を指定すると、https://localhost:8000/docsに送ったりできるのですか？それはどのようになるのですか？
+## Q.
+ではCookieでPath属性を指定すると、https://localhost:8000/docsに送ったりできるのですか？それはどのようになるのですか？
 
-#### A.
-- はい、CookieのPath属性を使用して特定のパスにCookieを送信することができます。例えば、あなたが指定した`https://localhost:8000/docs`のようなURLに送ることも可能です。
+## A.
+はい、CookieのPath属性を使用して特定のパスにCookieを送信することができます。例えば、あなたが指定した`https://localhost:8000/docs`のようなURLに送ることも可能です。
 
 具体的には、次のようなHTTPヘッダーを使って、Cookieを設定します：
 
@@ -101,11 +101,11 @@ Set-Cookie: name=value; Path=/docs
 
 <details><summary>ではsetCookieで保存したid:001, auth:'mokeke'を/docsにつけてlocalhostに送信する方法はどのように記述さればよいですか？</summary>
 
-#### Q.
-- ではsetCookieで保存したid:001, auth:'mokeke'を/docsにつけてlocalhostに送信する方法はどのように記述さればよいですか？
+## Q.
+ではsetCookieで保存したid:001, auth:'mokeke'を/docsにつけてlocalhostに送信する方法はどのように記述さればよいですか？
 
-#### A.
-- 次のように`Set-Cookie`ヘッダーを使用して、`id=001`と`auth='mokeke'`を`/docs`パスに設定し、`localhost`に送信することができます。
+## A.
+次のように`Set-Cookie`ヘッダーを使用して、`id=001`と`auth='mokeke'`を`/docs`パスに設定し、`localhost`に送信することができます。
 
 ```http
 Set-Cookie: id=001; Path=/docs
@@ -148,12 +148,12 @@ Cookie: id=001; auth=mokeke
 
 <details><summary>__Host-:の説明</summary>
 
-#### Q.
-- mozilla.orgのCookieの接頭辞の解説で以下の文がありました。どういう意味でしょうか？
+## Q.
+mozilla.orgのCookieの接頭辞の解説で以下の文がありました。どういう意味でしょうか？
 > __Host-: Cookie 名にこの接頭辞がついている場合、 Set-Cookie ヘッダーが受け入れられるのは Secure 属性で指定されており、安全なオリジンから送信されており、 Domain 属性を含んでおらず、 Path 属性が / に設定されている場合のみです。この場合、これらの Cookie は「ドメインにロックされている」と見なすことができます。
 
-#### A.
-- この説明は、`__Host-`接頭辞を持つCookieのセキュリティ要件を示しています。具体的には、この接頭辞がついたCookieは以下の条件を満たす必要があります：
+## A.
+この説明は、`__Host-`接頭辞を持つCookieのセキュリティ要件を示しています。具体的には、この接頭辞がついたCookieは以下の条件を満たす必要があります：
 
 1. **Secure 属性で指定されていること**:
    Cookieは`Secure`属性を持っている必要があります。つまり、HTTPS経由でのみ送信されます。
@@ -182,11 +182,11 @@ Set-Cookie: __Host-id=12345; Secure; Path=/;
 
 <details><summary>https://my.www.example.com/foo/bar　にfoo=barのcookieを送りたい場合は、上記の記述でよいですか？</summary>
 
-#### Q.
-- https://my.www.example.com/foo/bar　にfoo=barのcookieを送りたい場合は、上記の記述でよいですか？
+## Q.
+https://my.www.example.com/foo/bar　にfoo=barのcookieを送りたい場合は、上記の記述でよいですか？
 
-#### A.
-- おっしゃる通りです。この場合、以下のように`Set-Cookie`ヘッダーを設定すれば、`https://my.www.example.com/foo/bar`に対して`foo=bar`のCookieが送信されます。
+## A.
+おっしゃる通りです。この場合、以下のように`Set-Cookie`ヘッダーを設定すれば、`https://my.www.example.com/foo/bar`に対して`foo=bar`のCookieが送信されます。
 
 ```http
 Set-Cookie: foo=bar; Path=/foo/bar/; Domain=my.www.example.com; Secure
@@ -205,31 +205,31 @@ Set-Cookie: foo=bar; Path=/foo/bar/; Domain=my.www.example.com; Secure
 
 <details><summary>Chromeでブラウザのキャッシュをクリアする</summary>
 
-#### Q.
+## Q.
 - Chromeでブラウザのキャッシュをクリアする
 
-#### A.
-- Chrome を開きます。 画面右上の[…]をクリックし [設定] をタップします。 [基本設定] で、[プライバシーとセキュリティ] 次に [閲覧履歴データの削除] をタップします。 「期間」で削除期間を選択し、[キャッシュされた画像とファイル]の項目をチェックし[データを削除]をクリックします。
+## A.
+Chrome を開きます。 画面右上の[…]をクリックし [設定] をタップします。 [基本設定] で、[プライバシーとセキュリティ] 次に [閲覧履歴データの削除] をタップします。 「期間」で削除期間を選択し、[キャッシュされた画像とファイル]の項目をチェックし[データを削除]をクリックします。
 
 </details>
 
 <details><summary>Edgeでブラウザのキャッシュをクリアする</summary>
 
-#### Q.
-- Edgeでブラウザのキャッシュをクリアする
+## Q.
+Edgeでブラウザのキャッシュをクリアする
 
-#### A.
-- 設定＞プライバシー・検索・サービス＞閲覧データを削除する＞全期間
+## A.
+設定＞プライバシー・検索・サービス＞閲覧データを削除する＞全期間
 
 </details>
 
 <details><summary>ダウンロードしたopenapi.jsonを改行したい</summary>
 
-#### Q.
-- FastAPIでhttp://127.0.0.1:8000/redoc で表示後、Download OpenAPI specification:Download　でopenapi.jsonをダウンロードしました。VSCodeで開くとJSONが１行に全部書かれていて改行がなかった。どうすれば、改行された人間に読みやすいJSONを得れますか？
+## Q.
+FastAPIでhttp://127.0.0.1:8000/redoc で表示後、Download OpenAPI specification:Download　でopenapi.jsonをダウンロードしました。VSCodeで開くとJSONが１行に全部書かれていて改行がなかった。どうすれば、改行された人間に読みやすいJSONを得れますか？
 
-#### A.
-- JSONを読みやすい形式に整形する方法はいくつかありますが、VSCodeで手軽に行うための方法を紹介します。
+## A.
+JSONを読みやすい形式に整形する方法はいくつかありますが、VSCodeで手軽に行うための方法を紹介します。
 
 1. **VSCodeのフォーマッタを使う方法**:
    - ダウンロードした `openapi.json` ファイルをVSCodeで開きます。
@@ -281,30 +281,30 @@ Set-Cookie: foo=bar; Path=/foo/bar/; Domain=my.www.example.com; Secure
 
 <details><summary>aaa</summary>
 
-#### Q.
-- 
+## Q.
 
-#### A.
-- 
 
-</details>
+## A.
 
-<details><summary>aaa</summary>
-
-#### Q.
-- 
-
-#### A.
-- 
 
 </details>
 
 <details><summary>aaa</summary>
 
-#### Q.
-- 
+## Q.
 
-#### A.
-- 
+
+## A.
+
+
+</details>
+
+<details><summary>aaa</summary>
+
+## Q.
+
+
+## A.
+
 
 </details>
