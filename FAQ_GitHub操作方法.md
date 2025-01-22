@@ -607,32 +607,69 @@ git commit -m "Manually renamed file"
 
 </details>
 
-<details><summary>aaa</summary>
+<details><summary>git commit -mでBash画面になった。コメントを入力しました。保存方法は知りませんか？</summary>
 
 ## Q.
-- 
+git commit -mでBash画面になった。コメントを入力しました。保存方法は知りませんか？
 
 ## A.
-- 
+確かに、Gitのコミットメッセージ編集をBashで行うとき、少し戸惑うことがありますね。以下の手順で保存と終了ができますよ：
+
+1. コメントを入力後、 `ESC` キーを押してコマンドモードに切り替えます。
+2. その後、 `:wq` と入力してEnterキーを押します。
+
+これでメッセージが保存され、エディターが終了します。お試しください。😊
+
+他にも質問があれば、気軽にどうぞ！
 
 </details>
 
 <details><summary>aaa</summary>
 
 ## Q.
-- 
+
 
 ## A.
-- 
+
 
 </details>
 
 <details><summary>aaa</summary>
 
 ## Q.
-- 
+
 
 ## A.
-- 
+
+
+</details>
+
+<details><summary>aaa</summary>
+
+## Q.
+
+
+## A.
+
+
+</details>
+
+<details><summary>aaa</summary>
+
+## Q.
+
+
+## A.
+
+
+</details>
+
+<details><summary>aaa</summary>
+
+## Q.
+
+
+## A.
+
 
 </details>

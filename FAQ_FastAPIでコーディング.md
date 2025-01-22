@@ -10,8 +10,10 @@ FastAPIでmain.pyをこのようにつくりました。しかしuvicornでテ�
 >from fastapi import Body, FastAPI 
 >app = FastAPI() 
 >@app.put("/items/{item_id}") 
->async def read_items( item_id: UUID, start_datetime: datetime = Body(), end_datetime: datetime = Body(), process_after: 
->timedelta = Body(), repeat_at: Union[time, None] = Body(default=None), ): start_process = start_datetime + process_after duration = end_datetime start_process return { "item_id": item_id, "start_datetime": start_datetime, "end_datetime": end_datetime, "process_after": process_after, "repeat_at": repeat_at, "start_process": start_process, "duration": duration, }
+>async def read_items( item_id: UUID, start_datetime:
+> datetime = Body(), end_datetime: datetime = Body(), process_after: 
+>timedelta = Body(), 
+>repeat_at: Union[time, None] = Body(default=None), ): start_process = start_datetime + process_after duration = end_datetime start_process return { "item_id": item_id, "start_datetime": start_datetime, "end_datetime": end_datetime, "process_after": process_after, "repeat_at": repeat_at, "start_process": start_process, "duration": duration, }
 
 ## A.
 FastAPIで作成したAPIをテストするために、以下の手順を参考にしてください。
@@ -186,23 +188,167 @@ async def main():
 
 </details>
 
-<details><summary>aaa</summary>
+<details><summary>Cookieのmax-ageを設定したい</summary>
 
 ## Q.
-
+以下のコードでCookieのMax-Ageを取得したい。どう変えればよいですか？ 
+> @app.get("/", response_class=HTMLResponse)
+> async def read_root(request: Request):
+> # もしtokenがついていたら、独自のページに遷移する。
+>    token = request.cookies.get("token")
+>   if token: 
+>         # Tokenがある場合は /cde にリダイレクト 
+>         if request.cookies("max_age"): 
+>           print(f"max_age: {request.cookies('max_age')}") 
+>           return RedirectResponse(url="/cde") 
+>   return templates.TemplateResponse("login.html", {"request": request})
 
 ## A.
+クッキーの`max-age`属性は通常クライアント（ブラウザ）側で管理されるものであり、サーバー側のリクエストオブジェクトから直接アクセスすることはできません。しかし、クッキーの有効期限情報を保持し、サーバー側で利用する方法はいくつかあります。
 
+以下は、クッキーを設定する際にその有効期限情報をサーバー側の状態として保持し、それを利用して`max-age`を確認する方法の一例です：
+
+1. **クッキーの有効期限情報を保存するための辞書を作成**：
+
+```python
+import json
+from datetime import datetime, timedelta
+from fastapi import FastAPI, Response, Request, HTTPException
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
+
+app = FastAPI()
+templates = Jinja2Templates(directory="templates")
+
+# 有効期限情報を保存するための辞書
+token_expiry = {}
+
+def save_token_expiry(token: str, expires: timedelta):
+    expire_time = datetime.utcnow() + expires
+    token_expiry[token] = expire_time
+
+def load_token_expiry(token: str):
+    return token_expiry.get(token)
+```
+
+2. **クッキーを設定するエンドポイントを作成**：
+
+```python
+@app.post("/set-cookie")
+async def set_cookie(response: Response):
+    token = "your-jwt-token"
+    expires = timedelta(seconds=30)
+    
+    # 有効期限情報を保存
+    save_token_expiry(token, expires)
+
+    response.set_cookie(
+        key="token",
+        value=token,
+        max_age=expires.total_seconds(),
+    )
+    return {"message": "Cookie set"}
+```
+
+3. **クッキーの有効期限を確認するエンドポイントを作成**：
+
+```python
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    token = request.cookies.get("token")
+    if token:
+        expire_time = load_token_expiry(token)
+        if expire_time:
+            max_age = (expire_time - datetime.utcnow()).total_seconds()
+            print(f"max_age: {max_age}")
+        return RedirectResponse(url="/cde")
+    
+    return templates.TemplateResponse("login.html", {"request": request})
+```
+
+この方法で、サーバー側でクッキーの`max-age`を確認することができます。
+
+- `save_token_expiry`関数でクッキーの有効期限情報を辞書に保存します。
+- `load_token_expiry`関数で保存された有効期限情報を取得します。
+- `read_root`エンドポイントでクッキーの有効期限を確認し、その残り時間（`max_age`）を計算して出力します。
+
+他にも質問があれば、どうぞお知らせください！😊
 
 </details>
 
-<details><summary>aaa</summary>
+<details><summary>お弁当屋は閲覧できるが、他はNotAuthorizedエラーにしたい</summary>
 
 ## Q.
-
-
+このコードに権限番号2を渡すと閲覧できるが、1や3ではNotAuthorizedエラーに遷移するコードはどう書けばよいですか？
 ## A.
+`permission` の渡し方については、いくつかの方法があります。以下にいくつかの例を示します。
 
+### 1. クエリパラメータとして渡す
+URLのクエリパラメータとして権限を渡す方法です。例えば、次のようにリクエストURLを構成します：
+
+```http
+GET /today?permission=2
+```
+
+これにより、サーバー側で `permission` パラメータを受け取ります。
+
+### 2. ヘッダーとして渡す
+リクエストヘッダーとして権限を渡す方法です。例えば、次のようにします：
+
+```python
+@app.get("/today", response_class=HTMLResponse)
+def shop_today_order(request: Request, hx_request: Optional[str] = Header(None), permission: Optional[int] = Header(None)):
+    if permission != 2:
+        raise NotAuthorizedException()
+    
+    # ... (以下、省略)
+```
+
+この場合、リクエストを送る際に以下のようにヘッダーを設定します：
+
+```http
+GET /today
+Headers:
+    permission: 2
+```
+
+### 3. クッキーとして渡す
+クッキーに権限情報を保存し、それをサーバー側で読み取る方法です。例えば、ログイン時にクッキーを設定し、そのクッキーを利用して権限を確認します：
+
+```python
+@app.get("/today", response_class=HTMLResponse)
+def shop_today_order(request: Request, hx_request: Optional[str] = Header(None)):
+    permission = request.cookies.get("permission")
+    if permission != "2":
+        raise NotAuthorizedException()
+    
+    # ... (以下、省略)
+```
+
+この場合、ログイン時にクッキーを設定します：
+
+```python
+response.set_cookie(key="permission", value="2")
+```
+
+### 4. フォームデータとして渡す
+フォームデータとして権限を渡す方法です。例えば、POSTリクエストで権限情報を送ります：
+
+```python
+@app.post("/today", response_class=HTMLResponse)
+def shop_today_order(request: Request, hx_request: Optional[str] = Header(None), permission: int = Form(...)):
+    if permission != 2:
+        raise NotAuthorizedException()
+    
+    # ... (以下、省略)
+```
+
+これにより、フォームデータから `permission` パラメータを受け取ります。
+
+### まとめ
+どの方法を使用するかは、アプリケーションの要件やセキュリティポリシーに依存します。それぞれの方法にはメリットとデメリットがありますので、最適な方法を選択してください。
+
+もしさらに詳しい説明や具体的なコード例が必要であれば、教えてくださいね！ 😊
 
 </details>
 

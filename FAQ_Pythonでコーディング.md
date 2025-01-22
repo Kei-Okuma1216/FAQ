@@ -2,11 +2,11 @@
 
 <details><summary>pythonの日付操作</summary>
 
-#### Q.
-- timedelta()の月や年の場合などほかの場合の使い方を教えてください。
+## Q.
+timedelta()の月や年の場合などほかの場合の使い方を教えてください。
 
-#### A.
-- `timedelta`は、特定の期間を表すための便利なクラスです。ただし、`timedelta`自体は日付と時間を表すためのもので、月や年の単位を直接サポートしていません。これは、月や年の長さが一定ではないためです（例えば、月の日数は30日や31日、2月は28日や29日）。
+## A.
+`timedelta`は、特定の期間を表すための便利なクラスです。ただし、`timedelta`自体は日付と時間を表すためのもので、月や年の単位を直接サポートしていません。これは、月や年の長さが一定ではないためです（例えば、月の日数は30日や31日、2月は28日や29日）。
 
 月や年の単位を扱うためには、Pythonの`dateutil`ライブラリを使うことが一般的です。このライブラリには、より高機能な`relativedelta`クラスがあり、これを使用することで月や年を簡単に操作できます。
 
@@ -29,13 +29,13 @@ one_month_later = today + relativedelta(months=1)
 print(f"1ヶ月後の日付: {one_month_later}")
 
 # 1年前の日付を取得
-one_year_ago = today - relativedelta(years=1)
+one_year_ago = today relativedelta(years=1)
 print(f"1年前の日付: {one_year_ago}")
 ```
 
 このコードでは、`relativedelta`を使って以下のような操作を行っています：
-- `relativedelta(months=1)`で1ヶ月後の日付を取得
-- `relativedelta(years=1)`で1年前の日付を取得
+`relativedelta(months=1)`で1ヶ月後の日付を取得
+`relativedelta(years=1)`で1年前の日付を取得
 
 `relativedelta`を使うことで、月や年の単位を簡単に操作できるようになります。ぜひ試してみてください！
 
@@ -45,11 +45,11 @@ print(f"1年前の日付: {one_year_ago}")
 
 <details><summary>signatureから、日付を再取り出しできるか？</summary>
 
-#### Q.
-- この関数の返却値であるsignatureから、日付を再取り出しする関数は可能ですか？
+## Q.
+この関数の返却値であるsignatureから、日付を再取り出しする関数は可能ですか？
 
-#### A.
-- デジタル署名の目的はメッセージの認証と整合性の確認であり、署名そのものから元のメッセージや日付を抽出することはできません。署名はメッセージのハッシュ値に基づいて生成されるため、元のメッセージや日付を再生成することは数学的に不可能です。これは、メッセージが改ざんされていないことを確認するための重要な特性です。
+## A.
+デジタル署名の目的はメッセージの認証と整合性の確認であり、署名そのものから元のメッセージや日付を抽出することはできません。署名はメッセージのハッシュ値に基づいて生成されるため、元のメッセージや日付を再生成することは数学的に不可能です。これは、メッセージが改ざんされていないことを確認するための重要な特性です。
 
 ただし、メッセージと日付を組み合わせた形式で保存し、それを後で検証することはできます。例えば、元のメッセージと日付を結合して保存し、その結合されたメッセージに対して署名を生成し、後でその署名を検証することで、メッセージと日付が改ざんされていないことを確認できます。
 
@@ -125,11 +125,11 @@ print(f"1年前の日付: {one_year_ago}")
 
 <details><summary>このアプリの設計は適切か？</summary>
 
-#### Q.
-- このアプリの設計で適切かどうか教えてください。今アプリを作っています。弁当注文アプリです。ユーザーがスマホでNFCカードを読み取り、NFCカードに記録されているURLのポータルサイトにアクセスをすると、アクセス先画面がユーザーIDとパスワードの入力を要求する。ユーザーがそれらを入力後OKボタンを押すと、入力したユーザーIDとパスワードと今日の日付でcombined_messageをつくり、combined_messageを使って署名を生成つまりsignatureをつくる。combined_messageとsignatureはユーザーのブラウザのCookieに保存される。次回ポータルサイトにアクセスすると、combined_messageから日付を取り出してsignatureがcombined_messageの署名であることを確認する。Trueならば日付のチェックをする。Falseならば、エラー画面に遷移する。どうでしょうか？
+## Q.
+このアプリの設計で適切かどうか教えてください。今アプリを作っています。弁当注文アプリです。ユーザーがスマホでNFCカードを読み取り、NFCカードに記録されているURLのポータルサイトにアクセスをすると、アクセス先画面がユーザーIDとパスワードの入力を要求する。ユーザーがそれらを入力後OKボタンを押すと、入力したユーザーIDとパスワードと今日の日付でcombined_messageをつくり、combined_messageを使って署名を生成つまりsignatureをつくる。combined_messageとsignatureはユーザーのブラウザのCookieに保存される。次回ポータルサイトにアクセスすると、combined_messageから日付を取り出してsignatureがcombined_messageの署名であることを確認する。Trueならば日付のチェックをする。Falseならば、エラー画面に遷移する。どうでしょうか？
 
-#### A.
-- アプリの設計についてお話しいただきありがとうございます。全体的に非常によく考えられた設計だと思います。ただし、セキュリティやユーザー体験の観点からいくつかのポイントを考慮することをおすすめします。
+## A.
+アプリの設計についてお話しいただきありがとうございます。全体的に非常によく考えられた設計だと思います。ただし、セキュリティやユーザー体験の観点からいくつかのポイントを考慮することをおすすめします。
 
 ### 良い点
 1. **NFCカードの利用**: スマートで便利な方法です。
@@ -137,20 +137,20 @@ print(f"1年前の日付: {one_year_ago}")
 
 ### 改善提案
 1. **ブラウザのCookieの利用**:
-   - Cookieに保存する情報が多いと、セキュリティリスクが高まります。特に署名やcombined_messageのような重要な情報はセキュアなストレージ（例えば`localStorage`や`sessionStorage`）を検討することが望ましいです。
+   Cookieに保存する情報が多いと、セキュリティリスクが高まります。特に署名やcombined_messageのような重要な情報はセキュアなストレージ（例えば`localStorage`や`sessionStorage`）を検討することが望ましいです。
 
 2. **日付と署名の検証**:
-   - Combined_messageから日付を取り出し、署名を検証する部分が重要です。これが成功した場合、日付をチェックして、例えば30日以内に発行されたものであるかを確認するロジックを追加することをお勧めします。
+   Combined_messageから日付を取り出し、署名を検証する部分が重要です。これが成功した場合、日付をチェックして、例えば30日以内に発行されたものであるかを確認するロジックを追加することをお勧めします。
 
 3. **セッション管理**:
-   - ログインセッションの有効期限や、セッション管理を適切に行い、長時間ログイン状態が続くことによるセキュリティリスクを防ぎます。
+   ログインセッションの有効期限や、セッション管理を適切に行い、長時間ログイン状態が続くことによるセキュリティリスクを防ぎます。
 
 ### 改善後のフロー
 1. **ユーザーがNFCカードを読み取る**:
-   - URLのポータルサイトにアクセスする。
+   URLのポータルサイトにアクセスする。
 
 2. **ユーザーIDとパスワードの入力**:
-   - フォームでIDとパスワードを入力し、OKボタンを押す。
+   フォームでIDとパスワードを入力し、OKボタンを押す。
 
 3. **署名の生成**:
    - 入力したID、パスワード、今日の日付を組み合わせた`combined_message`を作成。
@@ -169,11 +169,11 @@ print(f"1年前の日付: {one_year_ago}")
 
 <details><summary>URLのGETメソッドで長文を流したくない…</summary>
 
-#### Q.
-- 上記設計で、署名であるsignatureからハッシュにつかった日付は取り出せないと回答が以前ありました。URLのGETメソッドで長文を流したくないため、日付を取り出せるシグネチャーみたいな何か良い工夫やお知恵はありませんか？
+## Q.
+上記設計で、署名であるsignatureからハッシュにつかった日付は取り出せないと回答が以前ありました。URLのGETメソッドで長文を流したくないため、日付を取り出せるシグネチャーみたいな何か良い工夫やお知恵はありませんか？
 
-#### A.
-- 承知しました。URLのGETメソッドで長文を送信しないための工夫として、いくつかの方法を検討できます。これらの方法は、日付を取り出せるようにするだけでなく、データのセキュリティと効率性も向上させます。
+## A.
+承知しました。URLのGETメソッドで長文を送信しないための工夫として、いくつかの方法を検討できます。これらの方法は、日付を取り出せるようにするだけでなく、データのセキュリティと効率性も向上させます。
 
 ### 方法1: 署名とは別に日付を保存
 署名と同時に日付を別に保存しておき、次回アクセス時に取り出して検証する方法です。この方法では、署名生成時に使用した日付をクッキーやセッションストレージに保存することで、署名と日付を効率的に検証できます。
@@ -239,11 +239,11 @@ JWTを使用して、署名済みのトークンにデータを埋め込み、�
 
 <details><summary>SECRET_KEY = "your-secret-key"</summary>
 
-#### Q.
-- 上記コードのこの部分は何ですか？実際のファイルのパスでしょうか？SECRET_KEY = "your-secret-key"
+## Q.
+上記コードのこの部分は何ですか？実際のファイルのパスでしょうか？SECRET_KEY = "your-secret-key"
 
-#### A.
-- `SECRET_KEY = "your-secret-key"` は実際のファイルのパスではなく、JWT (JSON Web Token) を生成および検証するために使用する秘密鍵を表しています。この秘密鍵は、トークンの署名を生成し、そのトークンの整合性を検証するために使用されます。
+## A.
+`SECRET_KEY = "your-secret-key"` は実際のファイルのパスではなく、JWT (JSON Web Token) を生成および検証するために使用する秘密鍵を表しています。この秘密鍵は、トークンの署名を生成し、そのトークンの整合性を検証するために使用されます。
 
 具体的には、`SECRET_KEY` はトークンのペイロード部分をハッシュ化し、署名を作成する際に使います。トークンを検証するときも、同じ`SECRET_KEY`を使ってトークンが改ざんされていないか確認します。
 
@@ -280,11 +280,11 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-default-secret-key")
 
 <details><summary>Windowsで.env ファイルを作成</summary>
 
-#### Q.
-- プロジェクトディレクトリに .env ファイルを作成し、以下のように記述します：と上記にありますが、Windowsではどのようにして.envファイルを作るのですか？
+## Q.
+プロジェクトディレクトリに .env ファイルを作成し、以下のように記述します：と上記にありますが、Windowsではどのようにして.envファイルを作るのですか？
 
-#### A.
-- Windowsで`.env`ファイルを作成するのはとても簡単です。以下の手順に従ってください：
+## A.
+Windowsで`.env`ファイルを作成するのはとても簡単です。以下の手順に従ってください：
 
 1. **プロジェクトディレクトリを開く**:
    - まず、プロジェクトが保存されているフォルダをエクスプローラで開きます。
@@ -316,11 +316,11 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-default-secret-key")
 
 <details><summary>SECRET_KEY=の中身は？</summary>
 
-#### Q.
-- .envファイルの中のこの部分ですが、イコールの右側にはハッシュ値が入るということであっていますか？SECRET_KEY=your-very-strong-secret-key
+## Q.
+.envファイルの中のこの部分ですが、イコールの右側にはハッシュ値が入るということであっていますか？SECRET_KEY=your-very-strong-secret-key
 
-#### A.
-- いいえ、イコールの右側にはハッシュ値が入るわけではありません。`SECRET_KEY`はハッシュ値そのものではなく、JWT（JSON Web Token）を生成および検証するための秘密鍵として使用されます。一般的には、ランダムな文字列や強力なパスワードのような値を設定します。
+## A.
+いいえ、イコールの右側にはハッシュ値が入るわけではありません。`SECRET_KEY`はハッシュ値そのものではなく、JWT（JSON Web Token）を生成および検証するための秘密鍵として使用されます。一般的には、ランダムな文字列や強力なパスワードのような値を設定します。
 
 例えば、次のような強力なランダムな文字列を設定します：
 ```
@@ -339,10 +339,10 @@ SECRET_KEY=3a5e8e2b7c9d5f7b6a1b2e9f8e2d6c3e4f5a6b7c8d9e0a1b2c3d4e5f6a7b8c9d
 
 <details><summary>強力なランダムな文字列を生成する適切な方法</summary>
 
-#### Q.
+## Q.
 - この your-very-strong-secret-key 部分には、強力なランダムな文字列を生成する適切な方法はご存じないですか？
 
-#### A.
+## A.
 - はい、強力なランダムな文字列を生成する適切な方法をご紹介します。Pythonを使用して、セキュリティに強いランダムな文字列を生成する方法をいくつか紹介します。
 
 ### 方法1: `secrets`モジュールを使用
@@ -399,10 +399,10 @@ print(f"Generated SECRET_KEY: {secret_key}")
 
 <details><summary>有効期限を閉じ込めた可逆な文字列</summary>
 
-#### Q.
+## Q.
 - 有効期限を閉じ込めた可逆な文字列を作成する方法はございませんか？
 
-#### A.
+## A.
 - 有効期限を含む可逆な文字列を作成する方法として、暗号化を使用するのが一般的です。暗号化を使って、有効期限を含むデータを暗号化し、必要なときに復号することで、有効期限を取り出すことができます。
 
 以下に、Pythonの`cryptography`ライブラリを使用して、有効期限を含む文字列を暗号化し、後で復号する方法を示します：
@@ -470,10 +470,10 @@ print(f"Generated SECRET_KEY: {secret_key}")
 
 <details><summary>FastAPIのコードに上記HTMLの特にJavaScriptを埋め込むことは可能ですか？</summary>
 
-#### Q.
+## Q.
 - FastAPIのコードに上記HTMLの特にJavaScriptを埋め込むことは可能ですか？
 
-#### A.
+## A.
 - はい、FastAPIのコードにHTMLとJavaScriptを埋め込むことは可能です。FastAPIを使ってHTMLテンプレートをレンダリングし、JavaScriptを埋め込むことができます。そのためには、Jinja2テンプレートエンジンを使用するのが一般的です。
 
 以下に、FastAPIアプリケーションでHTMLとJavaScriptをレンダリングする方法の例を示します：
@@ -539,10 +539,10 @@ uvicorn main:app --reload
 
 <details><summary>FileResponseとは何のコマンドですか？</summary>
 
-#### Q.
+## Q.
 - favicon_path = 'favicon.ico' # Adjust path to file @app.get('/favicon.ico', include_in_schema=False) async def favicon(): return FileResponse(favicon_path)上記のコードでブラウザがfaviconを要求して失敗するエラーを消せました。return FileResponseとは何のコマンドですか？
 
-#### A.
+## A.
 - `return FileResponse(favicon_path)` は、FastAPIの中でファイルをレスポンスとして返すためのコマンドです。具体的には、指定したパスにあるファイルをHTTPレスポンスとして返します。この場合、`favicon.ico`ファイルをブラウザに返すことで、ブラウザのファビコン要求に応答しています。
 
 ### `FileResponse`の説明
@@ -573,10 +573,10 @@ async def favicon():
 
 <details><summary>main.pyで実行しているこのコードは何をimportしてますか？from typing import Union</summary>
 
-#### Q.
+## Q.
 - main.pyで実行しているこのコードは何をimportしてますか？from typing import Union
 
-#### A.
+## A.
 - `from typing import Union` は、Pythonの型ヒント（type hinting）のためのモジュールである`typing`から`Union`をインポートしています。`Union`を使うことで、関数や変数に複数の型を持たせることができます。これにより、コードの可読性や保守性が向上します。
 
 ### 使用例
@@ -600,10 +600,10 @@ def add(x: Union[int, float], y: Union[int, float]) -> Union[int, float]:
 
 <details><summary>__init__.pyとは何ですか？</summary>
 
-#### Q.
+## Q.
 - __init__.pyとは何ですか？
 
-#### A.
+## A.
 - `__init__.py`は、Pythonのパッケージを定義するための特別なファイルです。このファイルは、ディレクトリをパッケージとして認識させる役割を持っています。以下にその詳細を説明します。
 
 ### 主な役割
@@ -637,10 +637,10 @@ Python 3.3以降では、`__init__.py`が存在しなくてもディレクトリ
 
 <details><summary>Pythonの関数の書き方を教えてください。</summary>
 
-#### Q.
+## Q.
 - Pythonの関数の書き方を教えてください。
 
-#### A.
+## A.
 - Pythonの関数は、`def`キーワードを使って定義します。関数は再利用可能なコードのブロックで、特定のタスクを実行するために使用されます。基本的な関数の書き方を説明します。
 
 ### 基本構造
@@ -721,10 +721,10 @@ print_kwargs(a=1, b=2)  # "a: 1" と "b: 2" がそれぞれ別の行に出力さ
 </details>
 <details><summary>Jinja2テンプレートエンジンのHTMLにFastAPIから引数を渡したい</summary>
 
-#### Q.
+## Q.
 - Jinja2テンプレートエンジンのHTMLにFastAPIから引数を渡したい。具体的にはtoken変数。どうすればいいですか？
 
-#### A.
+## A.
 - FastAPIでJinja2テンプレートエンジンを使用して、HTMLテンプレートに変数を渡すには、`TemplateResponse`のコンテキストに変数を追加する必要があります。以下は、あなたのコードを修正して`token`変数をテンプレートに渡す方法の例です：
 
 ### 修正後のFastAPIコード
@@ -781,7 +781,7 @@ async def register(request: Request, username: str = Form(...), password: str = 
 
 <details><summary>timedeltaの使用法</summary>
 
-#### Q.
+## Q.
 - これはどういう意味でしょうか？
     - from datetime import datetime, timedelta 
     - d = datetime.fromisoformat("2004-07-07T00:00:00") 
@@ -789,7 +789,7 @@ async def register(request: Request, username: str = Form(...), password: str = 
     - d + timedelta(seconds=30) #=> datetime.datetime(2004, 7, 7, 0, 0, 30) 
     - d + timedelta(hours=8) #=> datetime.datetime(2004, 7, 7, 8, 0)
 
-#### A.
+## A.
 - このコードの目的は、`datetime` モジュールと `timedelta` クラスを使用して日付と時間の操作を行うことです。具体的には、ISO 8601形式の文字列から日付と時間を作成し、それに時間の増分を追加しています。以下の説明で詳細を解説します。
 
 ### コードの解説
@@ -825,10 +825,10 @@ async def register(request: Request, username: str = Form(...), password: str = 
 
 <details><summary>ヘッダからCookie値を取得する方法</summary>
 
-#### Q.
+## Q.
 - ではヘッダからCookie値である"cookie-key"を受け取る場合=Header(もcookie_key)になるのでしょうか？
 
-#### A.
+## A.
 - ほぼ正しいですが、`Header()`を使ってクッキーの値を取得するには、少し工夫が必要です。具体的には、`Header`デコレーターを使い、クッキーの名前を小文字で指定します。
 
 以下に例を示します：
@@ -869,31 +869,31 @@ curl -H "Cookie: cookie-key=my-cookie-value" "http://127.0.0.1:8000/items/"
 
 <details><summary>aaa</summary>
 
-#### Q.
+## Q.
 - 
 
-#### A.
+## A.
 - 
 
 </details>
 
 <details><summary>aaa</summary>
 
-#### Q.
+## Q.
 - 
 
-#### A.
+## A.
 - 
 
 </details>
 
 <details><summary>引数の**はどういう意味ですか？</summary>
 
-#### Q.
+## Q.
 - このコードのカッコ内の**はどういう意味ですか？
 > return UserOut(**user.dict())
 
-#### A.
+## A.
 - このコードの`**`は、Pythonの「辞書のアンパッキング」機能を使用しています。具体的には、`**`を使うことで辞書（`dict`）の内容をキーワード引数として関数やクラスに渡すことができます。
 
 以下で詳しく説明します：
@@ -933,20 +933,20 @@ return UserOut(**user.dict())
 
 <details><summary>aaa</summary>
 
-#### Q.
+## Q.
 - 
 
-#### A.
+## A.
 - 
 
 </details>
 
 <details><summary>aaa</summary>
 
-#### Q.
+## Q.
 - 
 
-#### A.
+## A.
 - 
 
 </details>
