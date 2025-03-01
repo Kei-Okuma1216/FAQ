@@ -781,57 +781,524 @@ async def register(
 
 </details>
 
-<details><summary>aaa</summary>
+<details><summary>証明書を再作成する。CN=127.0.0.1を含める</summary>
+
+#### Q.
+E           httpx.ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '127.0.0.1'. (_ssl.c:1000)
+
+C:\Users\tensy\AppData\Local\Programs\Python\Python312\Lib\site-packages\httpx\_transports\default.py:118: ConnectError
+=============================================== short test summary info ===============================================
+FAILED test_login4.py::test_login_success - httpx.ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is...
+FAILED test_login4.py::test_login_failure - httpx.ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is...
+================================================== 2 failed in 0.92s ==================================================　IPアドレスミスマッチとはなんでしょうか？
+
+
+#### A.
+### **`IP address mismatch` エラーの原因**
+エラーの内容：
+```plaintext
+httpx.ConnectError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: IP address mismatch, certificate is not valid for '127.0.0.1'. (_ssl.c:1000)
+```
+これは、**証明書の `Common Name (CN)` や `Subject Alternative Name (SAN)` に `127.0.0.1` が含まれていないために発生** しています。
+
+#### **💡 原因**
+- `my-local.crt` の `CN` や `SAN` に `127.0.0.1` が設定されていない
+- 証明書は `localhost` 用に発行されており、IP (`127.0.0.1`) では認識されない
+
+---
+
+### **✅ 解決策**
+#### **方法 1️⃣ : `localhost` にアクセスする**
+もし `my-local.crt` が `localhost` 用に発行されている場合、**`127.0.0.1` ではなく `localhost` にアクセスする** と解決できます。
+
+修正前：
+```python
+base_url="https://127.0.0.1:8000"
+```
+修正後：
+```python
+base_url="https://localhost:8000"
+```
+**`localhost` に変更して試してください！**
+
+---
+
+#### **方法 2️⃣ : `verify=False` で証明書検証を無効化**
+開発環境で一時的に証明書の検証を無効にする場合：
+```python
+async with httpx.AsyncClient(base_url="https://127.0.0.1:8000", verify=False) as client:
+```
+**ただし、セキュリティ上の理由から本番環境では使用しないようにしてください！**
+
+---
+
+#### **方法 3️⃣ : `my-local.crt` を再生成し `127.0.0.1` を追加**
+証明書に `127.0.0.1` を含めて再生成することで、このエラーを解消できます。
+
+### **🛠 `127.0.0.1` を含む自己署名証明書の作成**
+1. **秘密鍵を作成**
+   ```sh
+   openssl genrsa -out my-local.key 2048
+   ```
+2. **証明書署名要求 (CSR) を作成**
+   ```sh
+   openssl req -new -key my-local.key -out my-local.csr -subj "/CN=127.0.0.1"
+   ```
+3. **`openssl.cnf` を作成し、SAN を追加**
+   `openssl.cnf` ファイルを作成して、次の内容を追加：
+   ```
+   [ req ]
+   distinguished_name = req_distinguished_name
+   req_extensions = v3_req
+   prompt = no
+
+   [ req_distinguished_name ]
+   CN = 127.0.0.1
+
+   [ v3_req ]
+   subjectAltName = @alt_names
+
+   [ alt_names ]
+   DNS.1 = localhost
+   IP.1 = 127.0.0.1
+   ```
+4. **`SAN` を含む証明書を作成**
+   ```sh
+   openssl x509 -req -in my-local.csr -signkey my-local.key -out my-local.crt -days 365 -extfile openssl.cnf -extensions v3_req
+   ```
+5. **FastAPI (`uvicorn`) の起動時に新しい証明書を指定**
+   ```sh
+   uvicorn main:app --host 127.0.0.1 --port 8000 --ssl-keyfile=my-local.key --ssl-certfile=my-local.crt
+   ```
+6. **ブラウザで `https://127.0.0.1:8000` にアクセスし、証明書の `SAN` に `127.0.0.1` が含まれているか確認**
+
+---
+
+### **✅ まとめ**
+| 方法 | 解決策 | 推奨度 |
+|------|--------|-------|
+| **① `localhost` にアクセス** | `https://127.0.0.1:8000` → `https://localhost:8000` に変更 | ✅ **推奨** |
+| **② `verify=False` を設定** | `httpx.AsyncClient(verify=False)` で SSL 検証を無効化 | ⚠️ **開発環境限定** |
+| **③ 証明書を再生成** | `openssl` を使い `127.0.0.1` を `SAN` に追加 | ✅ **最善策** |
+
+まずは **① `localhost` に変更** して試し、それでもダメなら **③ 証明書の再生成** を試してください！
+
+</details>
+
+<details><summary>openssl.cnf を作成し、SAN を追加 ここはどのようにやるのですか？</summary>
+
+#### Q.
+openssl.cnf を作成し、SAN を追加 ここはどのようにやるのですか？
+#### A.
+### **`openssl.cnf` を作成し、SAN (Subject Alternative Name) を追加する方法**
+自己署名証明書 (`my-local.crt`) に `127.0.0.1` を含めるため、`openssl.cnf` を作成する手順を詳しく説明します。
+
+---
+
+### **✅ 1. `openssl.cnf` を作成**
+#### **Windows の場合**
+1. `app/` ディレクトリに `openssl.cnf` というファイルを作成
+2. 以下の内容をコピーして保存
+
+```ini
+[ req ]
+default_bits       = 2048
+distinguished_name = req_distinguished_name
+req_extensions     = v3_req
+prompt            = no
+
+[ req_distinguished_name ]
+CN = 127.0.0.1
+
+[ v3_req ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = localhost
+IP.1  = 127.0.0.1
+```
+
+#### **Linux/macOS の場合**
+ターミナルで `openssl.cnf` を作成し、エディタで開く：
+```sh
+nano openssl.cnf
+```
+上記の `ini` 内容を貼り付けて保存 (`Ctrl + X`, `Y`, `Enter`)
+
+---
+
+### **✅ 2. `SAN` を含む証明書を作成**
+#### **① 秘密鍵 (`my-local.key`) を作成**
+```sh
+openssl genrsa -out my-local.key 2048
+```
+
+#### **② 証明書署名要求 (`CSR`) を作成**
+```sh
+openssl req -new -key my-local.key -out my-local.csr -config openssl.cnf
+```
+
+#### **③ `SAN` を含む証明書 (`CRT`) を発行**
+```sh
+openssl x509 -req -in my-local.csr -signkey my-local.key -out my-local.crt -days 365 -extfile openssl.cnf -extensions v3_req
+```
+
+**確認**
+```sh
+openssl x509 -in my-local.crt -text -noout
+```
+`Subject Alternative Name` に `127.0.0.1` が含まれていれば成功。
+
+---
+
+### **✅ 3. FastAPI (`uvicorn`) を正しく起動**
+新しい証明書 (`my-local.crt`) を使って FastAPI (`uvicorn`) を起動します。
+
+```sh
+uvicorn main:app --host 127.0.0.1 --port 8000 --ssl-keyfile=my-local.key --ssl-certfile=my-local.crt
+```
+
+---
+
+### **✅ 4. `httpx` のテストコードを修正**
+```python
+import ssl
+
+ssl_context = ssl.create_default_context()
+ssl_context.load_verify_locations("C:/Obento-Test/v_0.1.3/app/my-local.crt")
+
+@pytest.mark.asyncio
+async def test_login_success():
+    async with httpx.AsyncClient(base_url="https://127.0.0.1:8000", verify=ssl_context) as client:
+        response = await client.get("/")
+        assert response.status_code == 200
+```
+
+---
+
+### **✅ まとめ**
+| 手順 | コマンド |
+|------|--------|
+| `openssl.cnf` を作成 | `nano openssl.cnf` |
+| 秘密鍵 (`.key`) を作成 | `openssl genrsa -out my-local.key 2048` |
+| CSR (`.csr`) を作成 | `openssl req -new -key my-local.key -out my-local.csr -config openssl.cnf` |
+| 証明書 (`.crt`) を作成 | `openssl x509 -req -in my-local.csr -signkey my-local.key -out my-local.crt -days 365 -extfile openssl.cnf -extensions v3_req` |
+| FastAPI を起動 | `uvicorn main:app --host 127.0.0.1 --port 8000 --ssl-keyfile=my-local.key --ssl-certfile=my-local.crt` |
+
+この手順で `127.0.0.1` に適用された証明書を作成できます！ 🚀  
+試してみて、問題があれば教えてください。
+
+</details>
+
+<details><summary>openssl.cnf とは何か？</summary>
+
+#### Q.
+-openssl.cnf とは何ですか？
+
+#### A.
+はい、ご認識の通り、`my-local.key` が秘密鍵 (Private Key)、`my-local.csr` が証明書署名要求 (Certificate Signing Request, CSR) です。
+
+---
+
+### `openssl.cnf` とは何か？
+
+`openssl.cnf` は **OpenSSL の設定ファイル** であり、証明書の発行や管理を行う際に OpenSSL が参照する設定情報を定義するファイルです。
+
+#### **なぜ `openssl.cnf` が必要なのか？**
+通常、`openssl req` コマンドで CSR を作成すると、`CN` (Common Name) しか指定できません。しかし、多くの証明書では `SAN` (Subject Alternative Name) という拡張属性が求められます。
+
+SAN とは、証明書に複数のドメインや IP アドレスを含めるための拡張フィールドで、近年のブラウザやセキュリティ要件では SAN が必須となることが多いです。
+
+しかし、`openssl req -new` コマンドでは直接 SAN を指定する方法がありません。そのため、`openssl.cnf` に SAN を記述して OpenSSL に適用する必要があります。
+
+---
+
+### `openssl.cnf` の作成例
+以下のような `openssl.cnf` を作成すると、CSR や証明書発行時に SAN を追加できます。
+
+#### **例: `openssl.cnf` の内容**
+```ini
+[req]
+default_bits = 2048
+distinguished_name = req_distinguished_name
+req_extensions = req_ext
+
+[req_distinguished_name]
+countryName = Country Name (2 letter code)
+countryName_default = JP
+stateOrProvinceName = State or Province Name (full name)
+stateOrProvinceName_default = Tokyo
+localityName = Locality Name (eg, city)
+localityName_default = Chiyoda
+organizationName = Organization Name (eg, company)
+organizationName_default = MyCompany
+commonName = Common Name (e.g. server FQDN or YOUR name)
+commonName_default = 127.0.0.1
+
+[req_ext]
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = localhost
+IP.1 = 127.0.0.1
+```
+
+---
+
+### **CSR を `openssl.cnf` を使って作成する**
+作成した `openssl.cnf` を指定して CSR を作成するには、次のコマンドを使います。
+
+```sh
+openssl req -new -key my-local.key -out my-local.csr -config openssl.cnf
+```
+
+この方法を使うと、SAN を含めた CSR を作成できます。
+
+---
+
+### **補足**
+- SAN を含めないと、一部のブラウザでは証明書が適用されないことがあります。
+- `openssl.cnf` は OpenSSL を使って証明書を管理する際に、様々な設定を記述できる便利なファイルです。
+
+何か不明点があれば、お気軽に聞いてください！
+
+</details>
+
+<details><summary>SANにCSRの詳細を含めることは可能ですか？</summary>
 
 #### Q.
 - 
 #### A.
-- 
+はい、CSR に `SAN (Subject Alternative Name)` を含めることは可能です。  
+通常、CSR を作成する際に `openssl.cnf` を使用して `SAN` を指定し、それを CSR に埋め込むことで実現できます。
+
+---
+
+### **SAN を CSR に含める方法**
+1. **`openssl.cnf` に SAN を記述**
+2. **`-config openssl.cnf` を指定して CSR を作成**
+
+---
+
+### **1. `openssl.cnf` に SAN を追加**
+以下のような `openssl.cnf` を作成してください。
+
+```ini
+[ req ]
+default_bits       = 2048
+distinguished_name = req_distinguished_name
+req_extensions     = req_ext
+
+[ req_distinguished_name ]
+countryName            = Country Name (2 letter code)
+countryName_default    = JP
+stateOrProvinceName    = State or Province Name (full name)
+stateOrProvinceName_default = Tokyo
+localityName           = Locality Name (eg, city)
+localityName_default   = Chiyoda
+organizationName       = Organization Name (eg, company)
+organizationName_default = MyCompany
+commonName            = Common Name (e.g. server FQDN or YOUR name)
+commonName_default    = 127.0.0.1
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = localhost
+DNS.2 = example.com
+DNS.3 = www.example.com
+IP.1 = 127.0.0.1
+IP.2 = 192.168.1.1
+```
+
+---
+
+### **2. CSR を作成**
+以下のコマンドを実行し、SAN を含めた CSR を作成します。
+
+```sh
+openssl req -new -key my-local.key -out my-local.csr -config openssl.cnf
+```
+
+---
+
+### **3. CSR の確認**
+作成した CSR に `SAN` が正しく含まれているかを確認するには、次のコマンドを使用します。
+
+```sh
+openssl req -text -noout -verify -in my-local.csr
+```
+
+実行結果に `X509v3 Subject Alternative Name` の項目が含まれていれば、CSR に SAN が追加されています。
+
+```plaintext
+        X509v3 Subject Alternative Name: 
+            DNS:localhost, DNS:example.com, DNS:www.example.com, IP Address:127.0.0.1, IP Address:192.168.1.1
+```
+
+---
+
+### **補足**
+- CSR に SAN を含めることで、証明書発行時に `SAN` を明示的に指定しなくても `SAN` を持つ証明書を作成できます。
+- ただし、認証局 (CA) によっては、CSR に含まれている `SAN` を無視し、独自のポリシーで `SAN` を設定する場合があります。
+
+この方法で CSR に `SAN` を追加できますので、ぜひ試してみてください！ 🎯
+
+</details>
+
+<details><summary>openssl.cnfに余計な記述がある</summary>
+
+#### Q.
+２．CSRの作成で以下のエラーになりました。
+C:\Obento-Test\v_0.1.3\app>openssl req -new -key my-local.key -out my-local.csr -config openssl.cnf
+Error making certificate request
+D8110000:error:04000067:object identifier routines:OBJ_txt2obj:unknown object name:crypto\objects\obj_dat.c:438:
+D8110000:error:05800077:x509 certificate routines:X509_NAME_ENTRY_create_by_txt:invalid field name:crypto\x509\x509name.c:252:name=countryName_default
+#### A.
+エラーメッセージを解析すると、`openssl.cnf` に記述した `countryName_default` などの設定が OpenSSL に認識されていない可能性があります。
+
+### **解決方法**
+1. **`countryName_default` の削除**
+   `openssl.cnf` で `*_default` という記述をしている部分を削除またはコメントアウトしてください。
+
+2. **正しい構文に修正**
+   `distinguished_name` のセクションでは `default` を使わずにシンプルに記述するほうが安全です。
+
+---
+
+### **修正後の `openssl.cnf`**
+```ini
+[ req ]
+default_bits       = 2048
+distinguished_name = req_distinguished_name
+req_extensions     = req_ext
+
+[ req_distinguished_name ]
+countryName            = JP
+stateOrProvinceName    = Tokyo
+localityName           = Chiyoda
+organizationName       = MyCompany
+commonName            = 127.0.0.1
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = localhost
+DNS.2 = example.com
+DNS.3 = www.example.com
+IP.1 = 127.0.0.1
+IP.2 = 192.168.1.1
+```
+
+---
+
+### **変更点**
+- `countryName_default = JP` のような `*_default` を削除しました。
+- 代わりに `countryName = JP` のように直接値を設定しました。
+
+---
+
+### **再実行**
+修正した `openssl.cnf` を使用して、再度 CSR を作成してください。
+
+```sh
+openssl req -new -key my-local.key -out my-local.csr -config openssl.cnf
+```
+
+これでエラーが解消する可能性が高いです。
+
+もしまだエラーが発生する場合は、具体的な `openssl` のバージョンを教えていただければ、より詳細に調査できます。
 
 </details>
 
 <details><summary>aaa</summary>
 
 #### Q.
-- 
+
+
 #### A.
-- 
+
 
 </details>
 
 <details><summary>aaa</summary>
 
 #### Q.
-- 
+
+
 #### A.
-- 
+
 
 </details>
 
 <details><summary>aaa</summary>
 
 #### Q.
-- 
+
+
 #### A.
-- 
+
 
 </details>
 
 <details><summary>aaa</summary>
 
 #### Q.
-- 
+
+
 #### A.
-- 
+
 
 </details>
 
 <details><summary>aaa</summary>
 
 #### Q.
-- 
+
+
 #### A.
-- 
+
+
+</details>
+
+<details><summary>aaa</summary>
+
+#### Q.
+
+
+#### A.
+
+
+</details>
+
+<details><summary>aaa</summary>
+
+#### Q.
+
+
+#### A.
+
+
+</details>
+
+<details><summary>aaa</summary>
+
+#### Q.
+
+
+#### A.
+
+
+</details>
+
+<details><summary>aaa</summary>
+
+#### Q.
+
+#### A.
+
 
 </details>
 
