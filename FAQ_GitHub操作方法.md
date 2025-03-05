@@ -676,6 +676,437 @@ git log --oneline
 
 </details>
 
+<details><summary>error: failed to push some refs to 'https://github.com/Kei-Okuma1216/Obento-Test.git'
+hint: Updates were rejected because a pushed branch tip is behind its remote</summary>
+
+## Q.
+同じくgit push でこのようなメッセージが表示されました。
+具体的にはどういう状態ですか？解決方法は何ですか
+C:\Obento-Test>git push origin main
+To https://github.com/Kei-Okuma1216/Obento-Test.git
+ ! [rejected]        main -> main (non-fast-forward)
+error: failed to push some refs to 'https://github.com/Kei-Okuma1216/Obento-Test.git'
+hint: Updates were rejected because a pushed branch tip is behind its remote
+hint: counterpart. If you want to integrate the remote changes, use 'git pull'
+hint: before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+
+## A.
+この **`git push` のエラーメッセージ** は、リモートリポジトリの `main` ブランチにある **最新の変更をローカルが持っていないため、プッシュが拒否された** ことを意味します。  
+
+---
+
+## ⚠ **エラーメッセージの意味**
+```plaintext
+! [rejected] main -> main (non-fast-forward)
+error: failed to push some refs to 'https://github.com/Kei-Okuma1216/Obento-Test.git'
+hint: Updates were rejected because a pushed branch tip is behind its remote
+hint: counterpart. If you want to integrate the remote changes, use 'git pull'
+```
+**🔍 具体的な状態：**
+- **ローカルの `main` ブランチは、リモートの `main` ブランチより古い**  
+  → 誰かが **リモートの `main` に新しいコミットをプッシュした** ため、あなたの `main` ブランチが「遅れている」状態になっています。  
+- Gitは、リモートブランチの履歴を **上書きしないようにブロック** している。  
+- そのため、ローカルの `main` ブランチを **リモートの `main` に合わせる必要がある**。  
+
+---
+
+## ✅ **解決方法**
+ローカルの `main` ブランチをリモートの `main` に合わせた後で、再度 `git push` を実行すれば解決できます。  
+
+### **方法①: `git pull --rebase` で解決する（推奨）**
+```sh
+git pull --rebase origin main
+git push origin main
+```
+#### **🛠 解説**
+1. **`git pull --rebase origin main`**
+   - リモートの最新コミットをローカルに適用する。
+   - 自分の変更が後から適用されるように **履歴を整理（rebase）** する。  
+   - **コンフリクト（競合）が発生した場合は、手動で解決して `git rebase --continue` を実行。**  
+2. **`git push origin main`**
+   - ローカルの `main` ブランチをリモートにプッシュする。
+
+---
+
+### **方法②: `git pull` → `git merge` で解決する**
+```sh
+git pull origin main
+git push origin main
+```
+#### **🛠 解説**
+- `git pull origin main` を実行すると、リモートの `main` ブランチの最新変更を **マージ（merge）** して取り込む。  
+- その後、`git push origin main` でリモートにプッシュ。  
+- **デメリット:**  
+  - **余計なマージコミット（"Merge branch 'main' of ..."）が作成されることがある。**
+  - 履歴が汚れるため、`git pull --rebase` の方が綺麗。
+
+---
+
+### **方法③: 強制プッシュ（注意！）**
+```sh
+git push --force origin main
+```
+#### **🛠 解説**
+- **ローカルの `main` をリモートに強制的に上書きする方法。**  
+- **⚠ 注意:**  
+  - **他の人の変更が消える可能性があるため、通常は避けるべき！**
+  - **自分しか `main` ブランチを使っていない場合のみ実行してOK。**
+
+---
+
+## 🎯 **どの方法を使うべき？**
+| 方法 | おすすめの状況 | デメリット |
+|------|--------------|------------|
+| `git pull --rebase` | **通常はこれを使うべき！** | コンフリクトが起きる可能性あり |
+| `git pull` + `git push` | **簡単な方法** | マージコミットが増える |
+| `git push --force` | **他の人が触っていない場合のみ！** | 共同作業時はNG（変更が消える） |
+
+---
+
+## ✅ **まとめ**
+- **エラーの原因:** リモート `main` に新しい変更があり、ローカル `main` が古くなっている
+- **解決策（推奨）:** `git pull --rebase origin main` → `git push origin main`
+- **強制プッシュ（`git push --force`）は危険！** 他の人の変更を消さないように注意
+
+この手順で試してみてください！ 😊
+
+</details>
+
+<details><summary>git ファイルの削除はどうすればよいですか？</summary>
+
+## Q.
+git ファイルの削除はどうすればよいですか？
+
+## A.
+Gitでファイルを削除する方法は、以下の手順を参考にしてください：
+
+1. **Gitでファイルを削除する準備**  
+   コミットに反映させるには、ファイルをGitの追跡から削除する必要があります。以下のコマンドを使います。  
+   ```bash
+   git rm ファイル名
+   ```
+
+   例: `sample.txt` を削除したい場合：
+   ```bash
+   git rm sample.txt
+   ```
+
+2. **変更を確認する**  
+   `git status` コマンドで削除した内容が反映されているか確認します。削除するファイルがリストされているはずです。
+   ```bash
+   git status
+   ```
+
+3. **削除をコミットする**  
+   ファイルの削除を確定するために、以下のコマンドを実行してコミットします。  
+   ```bash
+   git commit -m "削除したファイルの説明を書く"
+   ```
+
+4. **リモートリポジトリへプッシュする**  
+   最後に変更をリモートリポジトリに反映させます。
+   ```bash
+   git push
+   ```
+
+5. **追跡から除外しファイルをローカルに保持する場合**  
+   ファイルを削除せず追跡から外したい場合は以下のコマンドを使用します：
+   ```bash
+   git rm --cached ファイル名
+   ```
+
+   この場合、ファイルはローカルには残りますが、Gitでの追跡が解除されます。
+
+試してみて問題があれば教えてくださいね！必要に応じて、さらに詳しくお手伝いします。 😊
+
+</details>
+
+<details><summary>database.pyをフォルダに移動した</summary>
+
+## Q.
+sqlite_database.pyをdatabaseフォルダに移動すると、左記のエラーになった。 no such table: User
+
+## A.
+エラー `no such table: User` は、SQLite が `User` というテーブルを見つけられないために発生しています。  
+ファイル `sqlite_database.py` を `database/` フォルダに移動したことで、データベースファイル `sample.db` へのパスが正しく解決されていない可能性が高いです。  
+
+---
+
+### 🔍 **考えられる原因**
+1. **データベースファイルのパスが変わった**
+   - `sqlite_database.py` を移動したことで、`sample.db` への相対パスが変わった可能性がある。
+   - 例えば、元々 `sqlite_database.py` が `project_root/` にあった場合:
+     ```python
+     conn = sqlite3.connect("sample.db")  # project_root/sample.db を参照
+     ```
+     しかし、`database/` に移動すると `database/sample.db` を探してしまう可能性がある。
+
+2. **データベースが新規作成されてしまった**
+   - SQLite は、指定されたパスに `.db` ファイルが存在しない場合、新しいデータベースファイルを作成する。
+   - もし `database/` 内に `sample.db` がないと、新規作成され、その中には `User` テーブルが存在しない。
+
+3. **マイグレーションが実行されていない**
+   - もし `User` テーブルがスクリプトで作成される設計になっている場合、`sqlite_database.py` を移動したことで、そのマイグレーション処理が正しく動作していない可能性がある。
+
+---
+
+### 🛠 **解決策**
+#### ✅ **1. データベースファイルのパスを確認・修正**
+データベースのパスを **絶対パス** または **適切な相対パス** に修正する。
+
+```python
+import os
+import sqlite3
+
+# プロジェクトルートからの絶対パスを取得
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # 現在のファイルのディレクトリ
+DB_PATH = os.path.join(BASE_DIR, "sample.db")  # sqlite_database.py と同じフォルダの sample.db を指定
+
+conn = sqlite3.connect(DB_PATH)
+```
+もし `database/` ではなくプロジェクトルート (`project_root/`) に `sample.db` があるなら:
+
+```python
+DB_PATH = os.path.join(BASE_DIR, "..", "sample.db")  # 1つ上のフォルダを指定
+```
+
+---
+
+#### ✅ **2. `sample.db` の実体を確認**
+以下の方法で `sample.db` がどこに存在しているかを確認。
+
+```bash
+find . -name "sample.db"
+```
+
+もし **新しい `sample.db` が作られてしまった** 場合、  
+本来の `sample.db` を適切なディレクトリにコピーまたは移動する。
+
+```bash
+mv /path/to/original/sample.db database/sample.db
+```
+
+---
+
+#### ✅ **3. `User` テーブルが存在するか確認**
+データベースに `User` テーブルが存在するか確認するため、以下を実行：
+
+```python
+import sqlite3
+
+conn = sqlite3.connect("sample.db")
+cursor = conn.cursor()
+
+# テーブル一覧を取得
+cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+tables = cursor.fetchall()
+print(tables)
+
+conn.close()
+```
+もし `User` テーブルが含まれていなければ、マイグレーションを実行する必要がある。
+
+---
+
+#### ✅ **4. マイグレーションを実行**
+もし `User` テーブルが作成されていないなら、適切なマイグレーションスクリプトを実行：
+
+```python
+import sqlite3
+
+conn = sqlite3.connect("sample.db")
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS User (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+""")
+
+conn.commit()
+conn.close()
+```
+
+もしくは、フレームワークを使っているなら `migrate` コマンドを実行：
+
+```bash
+python manage.py migrate  # Django の場合
+flask db upgrade  # Flask + Alembic の場合
+```
+
+---
+
+### 🎯 **まとめ**
+- `sample.db` のパスが適切か確認し、修正する
+- `find . -name "sample.db"` でデータベースがどこにあるか調べる
+- `User` テーブルが存在するか SQL で確認
+- マイグレーションが必要なら実行する
+
+移動後のプロジェクト構成や `sample.db` の正しい位置が分かれば、より具体的なアドバイスが可能です！
+
+</details>
+
+<details><summary>リポジトリのすべてのディレクトリで、git rm -r --cached .pytest_cache/を適用することは可能ですか？</summary>
+
+## Q.
+リポジトリのすべてのディレクトリで、git rm -r --cached .pytest_cache/を適用することは可能ですか？
+
+## A.
+### **✅ リポジトリ内のすべての `.pytest_cache/` を一括で削除する方法**  
+はい、リポジトリのすべてのディレクトリにある `.pytest_cache/` を `git rm -r --cached` で一括削除することは可能です！  
+
+---
+
+## **🛠 すべての `.pytest_cache/` を Git から削除するコマンド**
+```sh
+git rm -r --cached $(git ls-files -i -c --exclude-standard | grep '\.pytest_cache')
+```
+### **🔹 コマンドの意味**
+1. `git ls-files -i -c --exclude-standard`  
+   - **`.gitignore` で無視されるファイル一覧を取得**
+2. `grep '\.pytest_cache'`  
+   - **その中から `.pytest_cache/` のみを抽出**
+3. `git rm -r --cached $(...)`  
+   - **抽出した `.pytest_cache/` を Git から削除（追跡を解除）**
+
+👉 これで **すべての `.pytest_cache/` を Git の管理から外す** ことができます！ 🚀
+
+---
+
+## **🛠 `.pytest_cache/` を削除した後の手順**
+1. `.pytest_cache/` を Git から削除したら、変更をコミット：
+   ```sh
+   git commit -m "Remove all .pytest_cache from repository"
+   ```
+2. **リモートリポジトリにも反映する場合は、プッシュ**
+   ```sh
+   git push origin main  # 例: main ブランチにプッシュ
+   ```
+
+---
+
+## **✅ `.pytest_cache/` が手動で削除されているか確認**
+以下のコマンドを実行：
+```sh
+git ls-files | grep '\.pytest_cache'
+```
+👉 これで `.pytest_cache/` が Git の管理から完全に消えているか確認できます。  
+**何も表示されなければ OK！** 🎉
+
+---
+
+## **🎯 まとめ**
+| 目的 | コマンド |
+|------|---------|
+| **すべての `.pytest_cache/` を Git から削除** | `git rm -r --cached $(git ls-files -i -c --exclude-standard | grep '\.pytest_cache')` |
+| **削除を確定（コミット）** | `git commit -m "Remove all .pytest_cache from repository"` |
+| **リモートリポジトリに反映** | `git push origin main` |
+| **削除されたか確認** | `git ls-files | grep '\.pytest_cache'` |
+
+✅ **これでリポジトリ内の `.pytest_cache/` を完全に Git の管理から削除できます！** 🚀
+
+</details>
+
+<details><summary>grep がWindowsにないみたいです。こうなりました。
+C:\Obento-Test\v_0.1.3\app>git rm -r --cached $(git ls-files -i -c --exclude-standard | grep '\.pytest_cache')
+'grep' は、内部コマンドまたは外部コマンド、
+操作可能なプログラムまたはバッチ ファイルとして認識されていません。</summary>
+
+## Q.
+grep がWindowsにないみたいです。こうなりました。
+C:\Obento-Test\v_0.1.3\app>git rm -r --cached $(git ls-files -i -c --exclude-standard | grep '\.pytest_cache')
+'grep' は、内部コマンドまたは外部コマンド、
+操作可能なプログラムまたはバッチ ファイルとして認識されていません。
+
+## A.
+### **✅ Windows 環境で `grep` なしで `.pytest_cache/` を削除する方法**  
+Windows の `cmd` には `grep` がないため、`findstr` を使うか、別の方法で `.pytest_cache/` を削除できます。  
+
+---
+
+## **🛠 方法 1️⃣: `findstr` を使う**
+Windows では `grep` の代わりに `findstr` を使います。
+
+```sh
+for /F "delims=" %i in ('git ls-files -i -c --exclude-standard ^| findstr "\.pytest_cache"') do git rm -r --cached "%i"
+```
+
+🔹 **コマンドの意味**
+- `git ls-files -i -c --exclude-standard` → **`.gitignore` で無視されるファイル一覧を取得**
+- `findstr "\.pytest_cache"` → **`.pytest_cache/` を含むファイルのみを抽出**
+- `for /F ... do git rm -r --cached "%i"` → **抽出された `.pytest_cache/` を Git から削除**
+
+👉 **これで Windows の `cmd` でも `.pytest_cache/` を削除できます！**
+
+---
+
+## **🛠 方法 2️⃣: `PowerShell` を使う**
+Windows の **PowerShell** なら、以下のコマンドでも `.pytest_cache/` を削除できます。
+
+```powershell
+git ls-files -i -c --exclude-standard | Select-String "\.pytest_cache" | ForEach-Object { git rm -r --cached $_.ToString().Trim() }
+```
+👉 PowerShell を開いて実行してください（`cmd` では動作しません）。
+
+---
+
+## **🛠 方法 3️⃣: `.pytest_cache/` を手動で削除**
+もし `.pytest_cache/` の数が少ないなら、手動で削除する方法もあります。
+
+1. **以下のコマンドで `.pytest_cache/` の場所を確認**
+   ```sh
+   git ls-files -i -c --exclude-standard
+   ```
+   **（このリストに `.pytest_cache/` があれば、Git に追跡されている）**
+
+2. **個別に削除**
+   ```sh
+   git rm -r --cached path/to/.pytest_cache/
+   ```
+
+---
+
+## **🛠 `.pytest_cache/` を削除した後の手順**
+### **1️⃣ 削除をコミット**
+```sh
+git commit -m "Remove all .pytest_cache from repository"
+```
+### **2️⃣ リモートリポジトリにも反映**
+```sh
+git push origin main  # 例: main ブランチにプッシュ
+```
+### **3️⃣ `.pytest_cache/` が削除されたか確認**
+```sh
+git ls-files | findstr "\.pytest_cache"
+```
+**何も表示されなければ OK！** 🎉
+
+---
+
+## **🎯 まとめ**
+| 方法 | コマンド |
+|------|---------|
+| **Windows (`cmd`) で `.pytest_cache/` を削除** | `for /F "delims=" %i in ('git ls-files -i -c --exclude-standard ^| findstr "\.pytest_cache"') do git rm -r --cached "%i"` |
+| **PowerShell で `.pytest_cache/` を削除** | `git ls-files -i -c --exclude-standard | Select-String "\.pytest_cache" | ForEach-Object { git rm -r --cached $_.ToString().Trim() }` |
+| **`.pytest_cache/` の一覧を確認** | `git ls-files -i -c --exclude-standard` |
+| **個別に削除** | `git rm -r --cached path/to/.pytest_cache/` |
+
+✅ **Windows では `findstr` や PowerShell を使えば `grep` なしで `.pytest_cache/` を削除できます！** 🚀
+
+</details>
+
+<details><summary>aaa</summary>
+
+## Q.
+
+
+## A.
+
+
+</details>
+
 <details><summary>aaa</summary>
 
 ## Q.

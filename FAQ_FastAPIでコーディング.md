@@ -2369,13 +2369,20 @@ New-Item C:\Obento-Test\v_0.1.3\app\database\__init__.py -ItemType File
 
 </details>
 
-<details><summary>aaa</summary>
+<details><summary>appがrouterに認識されない場合</summary>
 
 ## Q.
-
-
+appがrouterに認識されない場合
 ## A.
-
+1. __init__.pyをフォルダに必ず置く
+2. PythonのPath設定方法
+設定
+setx PYTHONPATH "C:\Obento-Test\v_0.1.3\app"
+確認
+set PYTHONPATH
+もしくは　sysdm.cpl
+削除
+setx PYTHONPATH ""
 
 </details>
 
