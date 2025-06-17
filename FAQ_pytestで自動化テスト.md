@@ -1996,10 +1996,10 @@ GitHub では、 **Issues / Projects / Wiki / Gist** で Markdown をサポー�
 </details>
 
 <details>
-<summary>aaa</summary>
+<summary>Excelのxlsx形式でテスト実施記録のひな型はありませんか？</summary>
 
 #### Q.
-
+Excelのxlsx形式でテスト実施記録のひな型はありませんか？
 
 #### A.
 
